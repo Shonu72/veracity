@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "297806319754",
+    "project_id": "veracity-47cb2",
+    "storage_bucket": "veracity-47cb2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:297806319754:android:803d42aa11bf66300c5d73",
+        "android_client_info": {
+          "package_name": "com.example.veracity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "297806319754-e29f7vbob42pso308qkf74jhg80j6f4p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.veracity",
+            "certificate_hash": "17daa016362e2037e97e9904289218740631c91b"
+          }
+        },
+        {
+          "client_id": "297806319754-ikgtrjbiuh02p11atipjdoapemt126ah.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4LGH_sifxzWBVRa7qkdnoCegEfHBVmiM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "297806319754-ikgtrjbiuh02p11atipjdoapemt126ah.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
