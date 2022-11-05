@@ -8,7 +8,8 @@ import 'package:veracity/shared/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (kIsWeb) { // for web
+  if (kIsWeb) {
+    // for web
     await Firebase.initializeApp(
         options: FirebaseOptions(
             apiKey: Constants.apiKey,
@@ -30,24 +31,28 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final bool _isSignedIn = false;
+  bool _isSignedIn = false;
   @override
   void initState() {
-  
     super.initState();
     getUserLoggedInSatus();
   }
 
   getUserLoggedInSatus() async {
     await HelperFunction.getUserLoggedInSatus().then((value) {
-      if (value != null) {}
+      if (value != null) {
+        setState(() {
+          _isSignedIn = value;
+        });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData( // changing primary color as per my need
+      theme: ThemeData(
+          // changing primary color as per my need
           primaryColor: Constants().primaryColor,
           scaffoldBackgroundColor: Colors.white),
       debugShowCheckedModeBanner: false,

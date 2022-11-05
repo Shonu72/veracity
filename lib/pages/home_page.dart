@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:veracity/services/auth_services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,12 +9,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  AuthServices authServices = AuthServices();
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: Text("Home Page"),
-      ),
+          child: ElevatedButton(
+        child: const Text("LogOut"),
+        onPressed: () {
+          authServices.signOut();
+        },
+      )),
     );
   }
 }
