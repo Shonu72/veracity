@@ -1,11 +1,14 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:veracity/auth/login_page.dart';
 import 'package:veracity/helper/helper_function.dart';
 import 'package:veracity/pages/profile_page.dart';
 import 'package:veracity/pages/search_page.dart';
 import 'package:veracity/services/auth_services.dart';
+import 'package:veracity/services/database_services.dart';
 import 'package:veracity/widgets/widgets.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,7 +21,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String userName = "";
   String email = "";
+  Stream? groups;
+  String groupName = "";
   AuthServices authServices = AuthServices();
+  final bool _isLoading = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -33,6 +39,15 @@ class _HomePageState extends State<HomePage> {
     await HelperFunction.getUserNameFromSF().then((value) {
       userName = value!;
     });
+    // getting the list of snapshots in the stream
+
+    await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+        .getUserGroup()
+        .then((snapshot) {
+      setState(() {
+        groups = snapshot;
+      });
+    });
   }
 
   @override
@@ -42,7 +57,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
               onPressed: () {
-                nextScreen(context, const SearchPage());
+                nextScreenReplacement(context, const SearchPage());
               },
               icon: const Icon(Icons.search))
         ],
@@ -83,7 +98,7 @@ class _HomePageState extends State<HomePage> {
               selected: true,
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              leading: Icon(Icons.groups_rounded),
+              leading: const Icon(Icons.groups_rounded),
               title: const Text(
                 "Groups",
                 style: TextStyle(color: Colors.black),
@@ -91,7 +106,12 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               onTap: () {
-                nextScreen(context, ProfilePage());
+                nextScreenReplacement(
+                    context,
+                    ProfilePage(
+                      userName: userName,
+                      email: email,
+                    ));
               },
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -147,6 +167,116 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
+      ),
+      body: groupList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          popUpDialog(context);
+        },
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
+        child: const Icon(
+          Icons.group_add,
+          color: Colors.white,
+          size: 30,
+        ),
+      ),
+    );
+  }
+
+  popUpDialog(BuildContext context) {
+    showDialog(
+        // barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              "Create a group",
+              textAlign: TextAlign.left,
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _isLoading == true
+                    ? Center(
+                        child: CircularProgressIndicator(
+                            color: Theme.of(context).primaryColor),
+                      )
+                    : TextField(
+                        onChanged: ((value) {
+                          groupName = value;
+                        }),
+                        style: const TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor),
+                                borderRadius: BorderRadius.circular(20)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor),
+                                borderRadius: BorderRadius.circular(20)),
+                            errorBorder: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.redAccent),
+                                borderRadius: BorderRadius.circular(20))),
+                      )
+              ],
+            ),
+          );
+        });
+  }
+
+  groupList() {
+    return StreamBuilder(
+      stream: groups,
+      builder: (context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data['groups'] != null) {
+            if (snapshot.data['groups'].length != 0) {
+              return Text("hello");
+            } else {
+              return noGroupWidget();
+            }
+          } else {
+            return noGroupWidget();
+          }
+        } else {
+          return Center(
+            child: CircularProgressIndicator(
+              color: Theme.of(context).primaryColor,
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  noGroupWidget() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 25),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: (() {
+              popUpDialog(context);
+            }),
+            child: const Icon(
+              Icons.add_circle,
+              color: Colors.blueGrey,
+              size: 75,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            "You've not joined any group yet, Tap on add icon to join the group or search for the group from search button",
+            textAlign: TextAlign.center,
+          )
+        ],
       ),
     );
   }

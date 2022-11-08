@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:veracity/auth/register_page.dart';
@@ -176,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
           await HelperFunction.saveUserEmailSF(email);
           await HelperFunction.saveUserNameSF(snapshot.docs[0]['fullName']);
 
-          nextScreen(context, const HomePage());
+          nextScreen(context, HomePage());
         } else {
           showSnackBar(context, Colors.red, value);
           setState(() {
